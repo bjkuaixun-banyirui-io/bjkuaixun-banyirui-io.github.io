@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>校园社区 · 登录</title>
+<style>
+* {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+body {
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+.login-card {
+  width: 340px;
+  background: #ffffff;
+  padding: 48px 32px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+}
+.login-card h2 {
+  text-align: center;
+  color: #2d3748;
+  margin-bottom: 36px;
+  font-weight: 600;
+}
+.input-item {
+  margin-bottom: 16px;
+}
+input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 15px;
+  background: #fafbfc;
+  outline: none;
+  transition: 0.2s;
+}
+input:focus {
+  border-color: #6366f1;
+  background: #fff;
+}
+.code-row {
+  display: flex;
+  gap: 10px;
+}
+#getCode {
+  width: 110px;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.btn-login {
+  width: 100%;
+  padding: 14px;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-login:hover {
+  background: #4f46e5;
+}
+.tip {
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 24px;
+}
+</style>
+</head>
+<body>
+<div class="login-card">
+  <h2>校园交流社区</h2>
+  <div class="input-item">
+    <input type="tel" id="phone" placeholder="请输入手机号" maxlength="11">
+  </div>
+  <div class="input-item code-row">
+    <input type="text" id="code" placeholder="6位验证码" maxlength="6">
+    <button id="getCode" onclick="sendCode()">获取验证码</button>
+  </div>
+  <button class="btn-login" onclick="doLogin()">立即登录</button>
+  <p class="tip">管理员账号：13888888888</p>
+</div>
+
+<script>
+let cd = 60, timer = null, realCode = "";
+const ADMIN_PHONE = "13888888888";
+
+function sendCode() {
+  let p = phone.value.trim();
+  if (!/^1[3-9]\d{9}$/.test(p)) return alert("手机号格式不正确");
+  if (cd < 60) return;
+  realCode = Math.floor(100000 + Math.random() * 900000) + "";
+  localStorage.setItem("sms_" + p, realCode);
+  alert("你的验证码：" + realCode);
+  let btn = getCode;
+  btn.disabled = true;
+  timer = setInterval(() => {
+    cd--;
+    btn.innerText = cd + "s";
+    if (cd <= 0) {
+      clearInterval(timer);
+      btn.innerText = "获取验证码";
+      btn.disabled = false;
+      cd = 60;
+    }
+  }, 1000);
+}
+
+function doLogin() {
+  let p = phone.value.trim();
+  let c = code.value.trim();
+  if (!p || !c) return alert("请填写完整信息");
+  if (localStorage.getItem("sms_" + p) !== c) return alert("验证码错误");
+
+  let banList = JSON.parse(localStorage.getItem("banList") || "[]");
+  if (banList.includes(p)) return alert("账号已被封禁，无法登录");
+
+  localStorage.setItem("currUser", p);
+  if (!localStorage.getItem("user_" + p)) {
+    localStorage.setItem("user_" + p, JSON.stringify({
+      nick: "校园用户",
+      avatar: "https://picsum.photos/100/100",
+      album: []
+    }));
+  }
+  location.href = "index.html";
+}
+if (localStorage.getItem("currUser")) location.href = "index.html";
+</script>
+</body>
+</html>
