@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简易留言板</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📝 留言板</h1>
+        
+        <!-- 发帖输入区 -->
+        <div class="post-form">
+            <input type="text" id="username" placeholder="你的昵称（可选）">
+            <textarea id="postContent" placeholder="写下你想说的话..." rows="4"></textarea>
+            <button onclick="addPost()">发布留言</button>
+        </div>
+
+        <!-- 留言列表区 -->
+        <div class="posts-container">
+            <h2>留言区</h2>
+            <div id="postsList"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
