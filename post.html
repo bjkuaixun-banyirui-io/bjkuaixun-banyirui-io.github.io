@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发布帖子</title>
+<style>
+* {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+body {
+  background: #f8f9fa;
+  padding: 20px;
+}
+.publish-card {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 28px;
+  border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+h3 {
+  text-align: center;
+  color: #2d3748;
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+input, textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fafbfc;
+  outline: none;
+  font-size: 15px;
+  margin-bottom: 16px;
+}
+textarea {
+  height: 160px;
+  resize: none;
+}
+.preview {
+  max-width: 100%;
+  border-radius: 14px;
+  margin: 10px 0;
+  display: none;
+}
+.btn-publish {
+  width: 100%;
+  padding: 14px;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #6366f1;
+  text-decoration: none;
+  font-size: 14px;
+}
+</style>
+</head>
+<body>
+<div class="publish-card">
+  <h3>发布新帖子</h3>
+  <input type="text" id="title" placeholder="请输入帖子标题">
+  <textarea id="content" placeholder="请输入帖子内容"></textarea>
+  <input type="file" id="imgFile" accept="image/*" onchange="preImg()">
+  <input type="file" id="videoFile" accept="video/*" onchange="preVideo()">
+  <img id="imgPre" class="preview">
+  <video id="vidPre" class="preview" controls></video>
+  <button class="btn-publish" onclick="publish()">立即发布</button>
+  <a href="index.html" class="back-link">← 返回首页</a>
+</div>
+
+<script>
+const currUser = localStorage.getItem("currUser");
+if (!currUser) location.href = "login.html";
+let imgUrl = "", vidUrl = "";
+
+function preImg() {
+  let file = imgFile.files[0];
+  if (!file) return;
+  let reader = new FileReader();
+  reader.onload = e => {
+    imgUrl = e.target.result;
+    imgPre.src = imgUrl;
+    imgPre.style.display = "block";
+  };
+  reader.readAsDataURL(file);
+}
+
+function preVideo() {
+  let file = videoFile.files[0];
+  if (!file) return;
+  let reader = new FileReader();
+  reader.onload = e => {
+    vidUrl = e.target.result;
+    vidPre.src = vidUrl;
+    vidPre.style.display = "block";
+  };
+  reader.readAsDataURL(file);
+}
+
+function publish() {
+  let t = title.value.trim();
+  let c = content.value.trim();
+  if (!t || !c) return alert("标题和内容不能为空");
+  let posts = JSON.parse(localStorage.getItem("posts")) || [];
+  posts.unshift({
+    id: Date.now(),
+    uid: currUser,
+    title: t,
+    content: c,
+    img: imgUrl,
+    media: vidUrl,
+    time: Date.now(),
+    view: 1,
+    like: [],
+    collect: []
+  });
+  localStorage.setItem("posts", JSON.stringify(posts));
+  alert("发布成功！");
+  location.href = "index.html";
+}
+</script>
+</body>
+</html>
