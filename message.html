@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>私信聊天</title>
+<style>
+* {margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",system-ui,sans-serif;}
+body{background:#f8f9fa;padding:16px;}
+.chat-box{max-width:600px;margin:0 auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.chat-content{height:420px;padding:16px;overflow-y:auto;}
+.msg-me{text-align:right;margin:12px 0;}
+.msg-other{text-align:left;margin:12px 0;}
+.msg-txt{display:inline-block;padding:10px 16px;border-radius:16px;max-width:75%;}
+.msg-me .msg-txt{background:#6366f1;color:#fff;}
+.msg-other .msg-txt{background:#f1f5f9;color:#2d3748;}
+.send-row{display:flex;padding:12px;gap:10px;border-top:1px solid #f1f5f9;}
+#msgInput{flex:1;padding:12px;border:1px solid #e2e8f0;border-radius:14px;outline:none;}
+#sendBtn{padding:12px 20px;background:#6366f1;color:#fff;border:none;border-radius:14px;cursor:pointer;}
+.back{text-align:center;margin-top:20px;color:#6366f1;text-decoration:none;display:block;}
+</style>
+</head>
+<body>
+<div class="chat-box">
+  <div class="chat-content" id="chatBox"></div>
+  <div class="send-row">
+    <input type="text" id="msgInput" placeholder="输入私信内容...">
+    <button id="sendBtn" onclick="sendMsg()">发送</button>
+  </div>
+</div>
+<a href="index.html" class="back">← 返回首页</a>
+
+<script>
+const currUser = localStorage.getItem("currUser");
+if (!currUser) location.href = "login.html";
+if (!localStorage.getItem("chatData")) localStorage.setItem("chatData", "[]");
+
+function renderChat() {
+  let list = JSON.parse(localStorage.getItem("chatData"));
+  let html = "";
+  list.forEach(item=>{
+    if(item.from===currUser){
+      html += `<div class="msg-me"><div class="msg-txt">${item.txt}</div></div>`;
+    }else{
+      html += `<div class="msg-other"><div class="msg-txt">${item.txt}</div></div>`;
+    }
+  });
+  chatBox.innerHTML = html;
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function sendMsg() {
+  let txt = msgInput.value.trim();
+  if (!txt) return;
+  let list = JSON.parse(localStorage.getItem("chatData"));
+  list.push({from:currUser,txt:txt,time:Date.now()});
+  localStorage.setItem("chatData", JSON.stringify(list));
+  msgInput.value = "";
+  renderChat();
+}
+renderChat();
+</script>
+</body>
+</html>
