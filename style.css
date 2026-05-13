@@ -86,3 +86,54 @@ button:hover {
     color: #333;
     line-height: 1.5;
 }
+.post {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.post-author {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.post-time {
+    color: #999;
+    font-size: 12px;
+}
+
+.post-content {
+    color: #333;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.post-stats {
+    display: flex;
+    gap: 15px;
+    color: #666;
+    font-size: 14px;
+    align-items: center;
+}
+
+.post-stats button {
+    width: auto;
+    padding: 5px 10px;
+    background: #f0f0f0;
+    color: #333;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+}
+
+.post-stats button:hover {
+    background: #e0e0e0;
+}
