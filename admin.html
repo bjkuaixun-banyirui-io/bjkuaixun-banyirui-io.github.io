@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理员后台</title>
+<style>
+* {margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",system-ui,sans-serif;}
+body{background:#f8f9fa;padding:20px;}
+.admin-card{max-width:600px;margin:0 auto;background:#fff;padding:28px;border-radius:20px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+h3{text-align:center;color:#2d3748;margin-bottom:24px;}
+.item{padding:16px;border-bottom:1px solid #f1f5f9;}
+.item p{color:#4a5568;margin:6px 0;}
+.ban-btn{padding:6px 14px;background:#ef4444;color:#fff;border:none;border-radius:10px;cursor:pointer;font-size:13px;}
+.back{display:block;text-align:center;margin-top:24px;color:#6366f1;text-decoration:none;}
+.tip-text{color:#a0aec0;font-size:13px;text-align:center;margin-bottom:16px;}
+</style>
+</head>
+<body>
+<div class="admin-card">
+  <h3>网站管理后台</h3>
+  <p class="tip-text">仅管理员可进入，可封禁违规用户</p>
+  <div id="userList"></div>
+</div>
+<a href="index.html" class="back">← 返回首页</a>
+
+<script>
+const currUser = localStorage.getItem("currUser");
+const ADMIN = "13888888888";
+if (!currUser || currUser !== ADMIN) {
+  alert("无权限访问");
+  location.href = "index.html";
+}
+
+function renderUser() {
+  let banList = JSON.parse(localStorage.getItem("banList")||"[]");
+  let allUserKeys = [];
+  for(let i=0;i<localStorage.length;i++){
+    let k = localStorage.key(i);
+    if(k.startsWith("user_")) allUserKeys.push(k.replace("user_",""));
+  }
+  let html = "";
+  allUserKeys.forEach(phone=>{
+    let u = JSON.parse(localStorage.getItem("user_"+phone));
+    let isBan = banList.includes(phone);
+    html += `
+    <div class="item">
+      <p>手机号：${phone}</p>
+      <p>昵称：${u.nick}</p>
+      <p>状态：${isBan?"<span style='color:red'>已封禁</span>":"正常"}</p>
+      <button class="ban-btn" onclick="banUser('${phone}')">${isBan?"解除封禁":"封禁账号"}</button>
+    </div>
+    `;
+  });
+  userList.innerHTML = html;
+}
+
+function banUser(phone) {
+  let banList = JSON.parse(localStorage.getItem("banList")||"[]");
+  let idx = banList.indexOf(phone);
+  if(idx > -1){
+    banList.splice(idx,1);
+  }else{
+    banList.push(phone);
+  }
+  localStorage.setItem("banList", JSON.stringify(banList));
+  renderUser();
+}
+renderUser();
+</script>
+</body>
+</html>
