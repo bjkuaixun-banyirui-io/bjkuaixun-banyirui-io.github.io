@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>帖子评论</title>
+<style>
+* {margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",system-ui,sans-serif;}
+body{background:#f8f9fa;padding:16px;}
+.box{max-width:600px;margin:0 auto;background:#fff;border-radius:20px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.comment-item{padding:14px 0;border-bottom:1px solid #f1f5f9;}
+.cmt-user{font-weight:600;color:#2d3748;font-size:14px;}
+.cmt-time{font-size:12px;color:#a0aec0;margin:4px 0;}
+.cmt-text{color:#4a5568;font-size:15px;}
+.del-cmt{color:#ef4444;font-size:12px;cursor:pointer;float:right;}
+.input-cmt{width:100%;padding:14px;border:1px solid #e2e8f0;border-radius:14px;margin:16px 0;outline:none;}
+.btn-send{padding:10px 24px;background:#6366f1;color:#fff;border:none;border-radius:14px;cursor:pointer;}
+.back{display:block;margin-top:20px;text-align:center;color:#6366f1;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="box">
+  <div id="cmtList"></div>
+  <input type="text" id="cmtInput" placeholder="写下你的评论...">
+  <button class="btn-send" onclick="sendComment()">发表评论</button>
+</div>
+<a href="index.html" class="back">← 返回首页</a>
+
+<script>
+const currUser = localStorage.getItem("currUser");
+const ADMIN = "13888888888";
+if (!currUser) location.href = "login.html";
+
+let pid = new URLSearchParams(location.search).get("id");
+if (!pid) location.href = "index.html";
+pid = Number(pid);
+
+function getUser(p){let d=localStorage.getItem("user_"+p);return d?JSON.parse(d):{nick:"校园用户"};}
+function fmtTime(t){let d=new Date(t);return `${d.getMonth()+1}月${d.getDate()}日 ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;}
+
+function renderCmt() {
+  let comments = JSON.parse(localStorage.getItem("comments"))||[];
+  let list = comments.filter(x=>x.pid===pid);
+  let html = "";
+  list.forEach(item=>{
+    let u = getUser(item.uid);
+    html += `
+    <div class="comment-item">
+      <span class="cmt-user">${u.nick}</span>
+      ${currUser===ADMIN ? `<span class="del-cmt" onclick="delCmt(${item.id})">删除</span>` : ""}
+      <div class="cmt-time">${fmtTime(item.time)}</div>
+      <div class="cmt-text">${item.content}</div>
+    </div>
+    `;
+  });
+  cmtList.innerHTML = html;
+}
+
+function sendComment() {
+  let val = cmtInput.value.trim();
+  if (!val) return;
+  let comments = JSON.parse(localStorage.getItem("comments"))||[];
+  comments.push({
+    id: Date.now(),
+    pid: pid,
+    uid: currUser,
+    content: val,
+    time: Date.now()
+  });
+  localStorage.setItem("comments", JSON.stringify(comments));
+  cmtInput.value = "";
+  renderCmt();
+}
+
+function delCmt(id) {
+  if (!confirm("删除这条评论？")) return;
+  let arr = JSON.parse(localStorage.getItem("comments"));
+  arr = arr.filter(x=>x.id!==id);
+  localStorage.setItem("comments", JSON.stringify(arr));
+  renderCmt();
+}
+renderCmt();
+</script>
+</body>
+</html>
