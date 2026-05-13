@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布帖子 - 斑鸠快讯</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="nav-bar">
+            <button onclick="location.href='index.html'">← 返回</button>
+            <h2>发布帖子</h2>
+            <div></div>
+        </div>
+
+        <div class="post-form">
+            <select id="postCategory">
+                <option value="campus">校园</option>
+                <option value="life">生活</option>
+            </select>
+            <textarea id="postContent" placeholder="写下你想说的话..." rows="8"></textarea>
+            <button onclick="submitPost()">发布</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
