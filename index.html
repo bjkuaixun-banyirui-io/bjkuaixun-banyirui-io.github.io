@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>斑鸠快讯</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航 -->
+        <div class="nav-bar">
+            <h1>斑鸠快讯</h1>
+            <button id="loginBtn" onclick="toggleLogin()">登录</button>
+        </div>
+
+        <!-- 分类栏 -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="filterPosts('all')">全部</button>
+            <button class="tab-btn" onclick="filterPosts('hot')">最热</button>
+            <button class="tab-btn" onclick="filterPosts('campus')">校园</button>
+            <button class="tab-btn" onclick="filterPosts('life')">生活</button>
+        </div>
+
+        <!-- 帖子列表 -->
+        <div class="posts-container" id="postsList">
+            <div class="empty-tip">还没有帖子，快来发布第一条吧！</div>
+        </div>
+
+        <!-- 底部发帖按钮 -->
+        <div class="fab" onclick="location.href='post.html'">+</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
